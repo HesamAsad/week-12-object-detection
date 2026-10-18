@@ -1,0 +1,5 @@
+*.pdf
+*.ipynb
+.claude/
+.DS_Store
+HANDOVER_PROMPT.md
