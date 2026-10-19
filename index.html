@@ -789,6 +789,7 @@ table.e4t td.iou { font-family: var(--font-mono); background: color-mix(in srgb,
     <div class="vcard ok"><div class="vt">Single-pass detectors</div><div class="vd">Predict boxes and classes for the whole image in one network pass: YOLO, DETR (A7–A8). SSD and CenterNet in the notebook belong here too.</div></div>
     <div class="vcard atk"><div class="vt">Evaluation</div><div class="vd">Remove duplicates with NMS, match predictions to ground truth by IoU, then summarise with AP and mAP (A9–A11).</div></div>
   </div>
+  <p class="small"><b>Further viewing.</b> Justin Johnson's recorded lectures cover the same material with more architecture detail: Lecture 15, Object Detection,<sup class="cite"><a href="#ref-johnson">1</a></sup> and Lecture 16, Detection and Segmentation.<sup class="cite"><a href="#ref-johnson16">2</a></sup> Several diagrams below are redrawn from Lecture 15.</p>
 </section>
 
 <section id="a1">
@@ -839,8 +840,8 @@ table.e4t td.iou { font-family: var(--font-mono); background: color-mix(in srgb,
   <div class="eyebrow">A3 · Lecture 21, slides 18–32</div>
   <h3>Region proposals and R-CNN</h3>
   <div class="prose">
-    <p>Instead of every window, R-CNN classifies about 2000 <b>regions of interest</b> (RoIs) that are likely to contain objects. Selective Search proposes them by over-segmenting the image into superpixels and repeatedly merging adjacent ones by colour, texture, size and compactness.<sup class="cite"><a href="#ref-ss">1</a></sup></p>
-    <p>Each RoI is warped to \(224 \times 224\), run through a CNN, and given a class label and a box correction.<sup class="cite"><a href="#ref-rcnn">2</a></sup> The classifier has \(N + 1\) outputs: the \(N\) object classes and "background".</p>
+    <p>Instead of every window, R-CNN classifies about 2000 <b>regions of interest</b> (RoIs) that are likely to contain objects. Selective Search proposes them by over-segmenting the image into superpixels and repeatedly merging adjacent ones by colour, texture, size and compactness.<sup class="cite"><a href="#ref-ss">3</a></sup></p>
+    <p>Each RoI is warped to \(224 \times 224\), run through a CNN, and given a class label and a box correction.<sup class="cite"><a href="#ref-rcnn">4</a></sup> The classifier has \(N + 1\) outputs: the \(N\) object classes and "background".</p>
   </div>
   <div class="fig">
     <div class="fig-title"><span class="tag toy">Illustrative</span>Four detector architectures built from the same blocks</div>
@@ -894,7 +895,7 @@ table.e4t td.iou { font-family: var(--font-mono); background: color-mix(in srgb,
   <div class="eyebrow">A5 · Lecture 21, slides 33–48</div>
   <h3>Fast R-CNN and RoI pooling</h3>
   <div class="prose">
-    <p>Fast R-CNN runs the whole image through a fully convolutional backbone <b>once</b>, then crops each RoI from the last feature map.<sup class="cite"><a href="#ref-fast">3</a></sup> To give every RoI the same size, RoI pooling snaps the box to feature-map cells, divides it into a fixed grid, and max-pools within each grid cell.</p>
+    <p>Fast R-CNN runs the whole image through a fully convolutional backbone <b>once</b>, then crops each RoI from the last feature map.<sup class="cite"><a href="#ref-fast">5</a></sup> To give every RoI the same size, RoI pooling snaps the box to feature-map cells, divides it into a fixed grid, and max-pools within each grid cell.</p>
     <p>With a \(640 \times 480\) image and a \(20 \times 15\) feature map, one feature column covers \(32 \times 32\) pixels:</p>
     $$\text{stride} = \frac{640}{20} = \frac{480}{15} = 32.$$
   </div>
@@ -906,7 +907,7 @@ table.e4t td.iou { font-family: var(--font-mono); background: color-mix(in srgb,
       <div><canvas class="plot" id="a5-out" height="300" aria-label="2 by 2 pooled output"></canvas><div class="axlab">pooled \(2 \times 2\) output (one channel)</div></div>
     </div>
     <div class="readout" id="a5-read"></div>
-    <div class="cap">Top: the same box followed through the pipeline (adapted from J. Johnson, Lecture 15).<sup class="cite"><a href="#ref-johnson">4</a></sup></div>
+    <div class="cap">Top: the same box followed through the pipeline (adapted from J. Johnson, Lecture 15).<sup class="cite"><a href="#ref-johnson">1</a></sup></div>
   </div>
   <div class="prose">
     <p>Training uses a multi-task loss: cross-entropy for the class plus a smooth \(\ell_1\) loss on the box parameters, counted only for object classes (slide 47):</p>
@@ -922,7 +923,7 @@ table.e4t td.iou { font-family: var(--font-mono); background: color-mix(in srgb,
   <div class="fig">
     <div class="fig-title"><span class="tag toy">Illustrative</span>Where the backbone ends and the per-region network begins (slides 44–46)</div>
     <svg class="arch" id="a5-split" viewBox="0 0 760 210" role="img" aria-label="AlexNet and ResNet-50 split into backbone and per-region layers"></svg>
-    <div class="cap">The backbone runs once on the whole image; the layers after RoI pooling run once per region, so they are kept light. With AlexNet the five conv layers form the backbone and the two FC layers the per-region network; with ResNet-50 the last stage runs per region. Adapted from J. Johnson, Lecture 15 (2019).<sup class="cite"><a href="#ref-johnson">4</a></sup></div>
+    <div class="cap">The backbone runs once on the whole image; the layers after RoI pooling run once per region, so they are kept light. With AlexNet the five conv layers form the backbone and the two FC layers the per-region network; with ResNet-50 the last stage runs per region. Adapted from J. Johnson, Lecture 15 (2019).<sup class="cite"><a href="#ref-johnson">1</a></sup></div>
   </div>
 </section>
 
@@ -930,7 +931,7 @@ table.e4t td.iou { font-family: var(--font-mono); background: color-mix(in srgb,
   <div class="eyebrow">A6 · Lecture 21, slides 49–54</div>
   <h3>Faster R-CNN and anchor boxes</h3>
   <div class="prose">
-    <p>Faster R-CNN learns the proposals too.<sup class="cite"><a href="#ref-faster">5</a></sup> A <b>region proposal network</b> (RPN) places an anchor point at every feature-map column, and each anchor point carries \(k\) boxes of fixed sizes and aspect ratios.</p>
+    <p>Faster R-CNN learns the proposals too.<sup class="cite"><a href="#ref-faster">6</a></sup> A <b>region proposal network</b> (RPN) places an anchor point at every feature-map column, and each anchor point carries \(k\) boxes of fixed sizes and aspect ratios.</p>
     <p>For each anchor box the RPN predicts an objectness score (object or background) and a box transform, exactly as in A4. The best proposals then go through the Fast R-CNN head.</p>
     $$N_{\text{anchors}} = W_{\text{feat}} \times H_{\text{feat}} \times k.$$
   </div>
@@ -953,7 +954,7 @@ table.e4t td.iou { font-family: var(--font-mono); background: color-mix(in srgb,
   <div class="eyebrow">A7 · Lecture 22, slides 13–17</div>
   <h3>YOLO: one network pass, one output tensor</h3>
   <div class="prose">
-    <p>YOLO v1 skips proposals.<sup class="cite"><a href="#ref-yolo">6</a></sup> It divides the image into an \(S \times S\) grid. Each cell predicts \(B\) boxes, each with five numbers \((x, y, w, h, \text{confidence})\), and one set of \(C\) class probabilities.</p>
+    <p>YOLO v1 skips proposals.<sup class="cite"><a href="#ref-yolo">7</a></sup> It divides the image into an \(S \times S\) grid. Each cell predicts \(B\) boxes, each with five numbers \((x, y, w, h, \text{confidence})\), and one set of \(C\) class probabilities.</p>
     <p>The whole output is a single tensor:</p>
     $$S \times S \times (5B + C) = 7 \times 7 \times (5 \cdot 2 + 20) = 7 \times 7 \times 30 .$$
     <p>The cell that contains an object's centre is responsible for detecting it.</p>
@@ -978,7 +979,7 @@ table.e4t td.iou { font-family: var(--font-mono); background: color-mix(in srgb,
   <div class="eyebrow">A8 · Lecture 22, slides 18–23</div>
   <h3>DETR: detection as set prediction</h3>
   <div class="prose">
-    <p>DETR treats the output as a <b>set</b> of \(N\) (label, box) pairs, usually \(N = 100\).<sup class="cite"><a href="#ref-detr">7</a></sup> A CNN backbone and a transformer encoder produce image tokens. A transformer decoder turns \(N\) learned "object queries" into \(N\) predictions; queries without an object predict "no object".</p>
+    <p>DETR treats the output as a <b>set</b> of \(N\) (label, box) pairs, usually \(N = 100\).<sup class="cite"><a href="#ref-detr">8</a></sup> A CNN backbone and a transformer encoder produce image tokens. A transformer decoder turns \(N\) learned "object queries" into \(N\) predictions; queries without an object predict "no object".</p>
     <p>Training first finds the one-to-one assignment \(\hat\sigma\) between ground truth and predictions with the lowest total matching cost, then applies the loss to those pairs:</p>
     $$\hat\sigma = \arg\min_{\sigma}\ \sum_{i=1}^{N} \mathcal{C}\big(y_i,\ \hat y_{\sigma(i)}\big).$$
   </div>
@@ -1029,7 +1030,7 @@ table.e4t td.iou { font-family: var(--font-mono); background: color-mix(in srgb,
     <div class="controls"><button type="button" id="a10-step" class="primary">Add next detection</button><button type="button" id="a10-all">Show all</button><div class="seg" id="a10-int" role="group" aria-label="Area"><button type="button" data-v="0" aria-pressed="true">area under the points</button><button type="button" data-v="1">interpolated (COCO)</button></div></div>
     <div class="bigread" id="a10-read"></div>
   </div>
-  <div class="prose"><p>The slide reports dog AP \(\approx 0.86\): joining the points with straight lines gives 0.850, the interpolated rule below gives 0.865. The exact number depends on how the gaps between points are filled. COCO, and FiftyOne in the notebook, replace each precision by the best precision at any higher recall, then average it at 101 recall levels \(0, 0.01, \dots, 1\).<sup class="cite"><a href="#ref-coco">8</a></sup></p></div>
+  <div class="prose"><p>The slide reports dog AP \(\approx 0.86\): joining the points with straight lines gives 0.850, the interpolated rule below gives 0.865. The exact number depends on how the gaps between points are filled. COCO, and FiftyOne in the notebook, replace each precision by the best precision at any higher recall, then average it at 101 recall levels \(0, 0.01, \dots, 1\).<sup class="cite"><a href="#ref-coco">9</a></sup></p></div>
   <div class="warm" id="wa10">
     <div class="wh">Quick check · the best possible AP (slide 40)</div>
     <div class="chk" data-ans="1" data-tol="0" data-hint="Precision stays 1 while every true positive comes before every false positive, and recall reaches 1."><span class="ql">Five detections, three ground-truth dogs. What is the largest AP any ordering can achieve?</span><input type="text" inputmode="decimal" aria-label="best AP"><button type="button">Check</button><span class="fb"></span></div>
@@ -1059,7 +1060,7 @@ table.e4t td.iou { font-family: var(--font-mono); background: color-mix(in srgb,
   <div class="eyebrow">Part II · worksheet12_colab_new.ipynb</div>
   <h2>Notebook walkthrough</h2>
   <div class="prose">
-    <p>The notebook downloads a pre-trained detector from the TensorFlow 2 Model Zoo,<sup class="cite"><a href="#ref-tfod">9</a></sup> runs it on 25 of the workshop's 50 COCO 2017 validation images, and evaluates the detections with FiftyOne.<sup class="cite"><a href="#ref-fiftyone">10</a></sup></p>
+    <p>The notebook downloads a pre-trained detector from the TensorFlow 2 Model Zoo,<sup class="cite"><a href="#ref-tfod">10</a></sup> runs it on 25 of the workshop's 50 COCO 2017 validation images, and evaluates the detections with FiftyOne.<sup class="cite"><a href="#ref-fiftyone">11</a></sup></p>
     <p>We ran the same code on a CPU with TensorFlow 2.21 and stored every detection with score at least 0.05. Every chart below is computed in your browser from those detections, with FiftyOne's matching and AP rules. The code cells are collapsed; their numbers follow the notebook.</p>
   </div>
 </section>
@@ -1110,8 +1111,8 @@ for gpu in gpus:
   <div class="eyebrow">Notebook section 2(1)–(2) · cells 9–12</div>
   <h3>The model zoo: speed against accuracy</h3>
   <div class="prose">
-    <p>The Model Zoo's detectors were all trained on COCO 2017, with its 80 object classes.<sup class="cite"><a href="#ref-coco">8</a></sup> Their names give the architecture, the backbone and the input size, for example <code>ssd_mobilenet_v1_fpn_640x640</code>.</p>
-    <p>The notebook uses <b>SSD MobileNet V1 FPN 640×640</b>: a single-pass SSD head<sup class="cite"><a href="#ref-ssd">11</a></sup> on a MobileNet backbone<sup class="cite"><a href="#ref-mobilenet">12</a></sup> with a feature pyramid.<sup class="cite"><a href="#ref-fpn">13</a></sup></p>
+    <p>The Model Zoo's detectors were all trained on COCO 2017, with its 80 object classes.<sup class="cite"><a href="#ref-coco">9</a></sup> Their names give the architecture, the backbone and the input size, for example <code>ssd_mobilenet_v1_fpn_640x640</code>.</p>
+    <p>The notebook uses <b>SSD MobileNet V1 FPN 640×640</b>: a single-pass SSD head<sup class="cite"><a href="#ref-ssd">12</a></sup> on a MobileNet backbone<sup class="cite"><a href="#ref-mobilenet">13</a></sup> with a feature pyramid.<sup class="cite"><a href="#ref-fpn">14</a></sup></p>
   </div>
   <div class="fig">
     <div class="fig-title"><span class="tag pre">Model Zoo table</span>Speed and COCO mAP of the ten suggested models (cell 9)</div>
@@ -1121,7 +1122,7 @@ for gpu in gpus:
     <ol class="zoolist" id="n2-list"></ol>
     <div class="readout" id="n2-read"></div>
   </div>
-  <p class="takeaway">No model is both fastest and most accurate. The two most accurate, CenterNet Hourglass-104 (41.9) and Faster R-CNN Inception-ResNet V2 (37.7), use the heaviest backbones and are among the slowest: the speed–accuracy trade-off of lecture 21, slide 54.<sup class="cite"><a href="#ref-tradeoff">14</a></sup></p>
+  <p class="takeaway">No model is both fastest and most accurate. The two most accurate, CenterNet Hourglass-104 (41.9) and Faster R-CNN Inception-ResNet V2 (37.7), use the heaviest backbones and are among the slowest: the speed–accuracy trade-off of lecture 21, slide 54.<sup class="cite"><a href="#ref-tradeoff">15</a></sup></p>
   <details class="cellwrap"><summary><span class="in">Cell 10</span>Download and extract a model from the zoo · show code</summary><div class="cell"><div class="cell-head"><span class="in">Cell 10</span><span>Download and extract a model from the zoo</span><span class="sp"></span><button type="button" class="copy">Copy</button></div><pre><code class="language-python"># Download and extract model
 def download_model(model_name, model_date):
     base_url = &#x27;http://download.tensorflow.org/models/object_detection/tf2/&#x27;
@@ -1516,11 +1517,12 @@ print(det.label, round(det.confidence, 4), det.eval, round(det.eval_iou, 4))</co
   <div class="prereq" id="p11">Prerequisite 1.1 · Three detector families</div>
   <div class="vgrid g3">
     <div class="vcard def"><div class="vt">Faster R-CNN</div><div class="vd">Two stages: an RPN proposes regions from anchors, then a second head classifies and refines each one (A6).</div></div>
-    <div class="vcard ok"><div class="vt">SSD (RetinaNet when it uses ResNet + FPN)</div><div class="vd">One stage: anchors at several feature-map scales are classified and regressed directly, with no second look.<sup class="cite"><a href="#ref-ssd">11</a></sup><sup class="cite"><a href="#ref-retina">15</a></sup></div></div>
-    <div class="vcard c2"><div class="vt">CenterNet</div><div class="vd">One stage, no anchors: a heatmap per class whose peaks are object centres, plus a predicted width and height at each peak.<sup class="cite"><a href="#ref-centernet">16</a></sup> It extends YOLO's "heatmap per class" idea (A7).</div></div>
+    <div class="vcard ok"><div class="vt">SSD (RetinaNet when it uses ResNet + FPN)</div><div class="vd">One stage: anchors at several feature-map scales are classified and regressed directly, with no second look.<sup class="cite"><a href="#ref-ssd">12</a></sup><sup class="cite"><a href="#ref-retina">16</a></sup></div></div>
+    <div class="vcard c2"><div class="vt">CenterNet</div><div class="vd">One stage, no anchors: a heatmap per class whose peaks are object centres, plus a predicted width and height at each peak.<sup class="cite"><a href="#ref-centernet">17</a></sup> It extends YOLO's "heatmap per class" idea (A7).</div></div>
   </div>
+  <p class="small">For a longer comparison of two-stage and single-stage detectors, see Johnson's Lectures 15 and 16.<sup class="cite"><a href="#ref-johnson">1</a></sup><sup class="cite"><a href="#ref-johnson16">2</a></sup></p>
   <div class="prereq" id="p12">Prerequisite 1.2 · The backbone</div>
-  <div class="prose"><p>The backbone is the feature extractor shared by every head (lecture 21, slides 44–46). MobileNet replaces full convolutions by depthwise-separable ones, which cuts computation roughly eight-fold; ResNet-50 is deeper and more accurate.<sup class="cite"><a href="#ref-mobilenet">12</a></sup><sup class="cite"><a href="#ref-resnet">17</a></sup> Swapping it while keeping the detector head isolates the backbone's effect. A5 shows where the backbone ends.</p></div>
+  <div class="prose"><p>The backbone is the feature extractor shared by every head (lecture 21, slides 44–46). MobileNet replaces full convolutions by depthwise-separable ones, which cuts computation roughly eight-fold; ResNet-50 is deeper and more accurate.<sup class="cite"><a href="#ref-mobilenet">13</a></sup><sup class="cite"><a href="#ref-resnet">18</a></sup> Swapping it while keeping the detector head isolates the backbone's effect. A5 shows where the backbone ends.</p></div>
 
   <div class="warm" id="we1">
     <div class="wh">Warm-up exercise · reading the Model Zoo table</div>
@@ -1858,10 +1860,11 @@ print(det.label, round(det.confidence, 4), det.eval, round(det.eval_iou, 4))</co
   <div class="eyebrow">Reference material</div>
   <h2>References</h2>
   <ol class="refs">
+    <li id="ref-johnson">Justin Johnson. <i>Lecture 15: Object detection.</i> EECS 498-007 / 598-005 Deep Learning for Computer Vision, University of Michigan, Fall 2019. Lecture recording: Michigan Online, <a href="https://www.youtube.com/watch?v=TB-fdISzpHQ">youtube.com/watch?v=TB-fdISzpHQ</a>. Architecture figures on this page are redrawn and adapted from this lecture, which in turn adapts figures by Ross Girshick.</li>
+    <li id="ref-johnson16">Justin Johnson. <i>Lecture 16: Detection and segmentation.</i> EECS 498-007 / 598-005 Deep Learning for Computer Vision, University of Michigan, Fall 2019. Lecture recording: Michigan Online, <a href="https://www.youtube.com/watch?v=9AyMR4IhSWQ">youtube.com/watch?v=9AyMR4IhSWQ</a>.</li>
     <li id="ref-ss">Jasper R. R. Uijlings, Koen E. A. van de Sande, Theo Gevers and Arnold W. M. Smeulders. <i>Selective search for object recognition.</i> International Journal of Computer Vision 104(2):154–171, 2013. <a href="https://doi.org/10.1007/s11263-013-0620-5">doi:10.1007/s11263-013-0620-5</a></li>
     <li id="ref-rcnn">Ross Girshick, Jeff Donahue, Trevor Darrell and Jitendra Malik. <i>Rich feature hierarchies for accurate object detection and semantic segmentation.</i> In CVPR, pages 580–587, 2014. <a href="https://doi.org/10.1109/CVPR.2014.81">doi:10.1109/CVPR.2014.81</a></li>
     <li id="ref-fast">Ross Girshick. <i>Fast R-CNN.</i> In ICCV, pages 1440–1448, 2015. <a href="https://doi.org/10.1109/ICCV.2015.169">doi:10.1109/ICCV.2015.169</a></li>
-    <li id="ref-johnson">Justin Johnson. <i>Lecture 15: Object detection.</i> EECS 498-007 / 598-005 Deep Learning for Computer Vision, University of Michigan, Fall 2019. Architecture figures on this page are redrawn and adapted from this lecture, which in turn adapts figures by Ross Girshick.</li>
     <li id="ref-faster">Shaoqing Ren, Kaiming He, Ross Girshick and Jian Sun. <i>Faster R-CNN: towards real-time object detection with region proposal networks.</i> In NeurIPS, pages 91–99, 2015. <a href="https://arxiv.org/abs/1506.01497">arXiv:1506.01497</a></li>
     <li id="ref-yolo">Joseph Redmon, Santosh Divvala, Ross Girshick and Ali Farhadi. <i>You only look once: unified, real-time object detection.</i> In CVPR, pages 779–788, 2016. <a href="https://doi.org/10.1109/CVPR.2016.91">doi:10.1109/CVPR.2016.91</a></li>
     <li id="ref-detr">Nicolas Carion, Francisco Massa, Gabriel Synnaeve, Nicolas Usunier, Alexander Kirillov and Sergey Zagoruyko. <i>End-to-end object detection with transformers.</i> In ECCV, pages 213–229, 2020. <a href="https://doi.org/10.1007/978-3-030-58452-8_13">doi:10.1007/978-3-030-58452-8_13</a></li>

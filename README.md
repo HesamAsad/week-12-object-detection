@@ -25,7 +25,7 @@ Live site: [hesamasad.github.io/week-12-object-detection](https://hesamasad.gith
   - a prediction viewer with live score and IoU thresholds and TP / FP / FN colouring;
   - the classification report, precision–recall curves, mAP and per-image errors, all recomputed in the browser with FiftyOne's matching rules.
 - **Part III, exercises 1–4.** Problem statement, prerequisites, a self-checking warm-up, a guided activity and an answer. Exercise 4 has a step-by-step solution with cheat notes.
-- **Reference material.** Cheat notes per exercise, changes to the notebook code, a summary table and 17 references (DOIs checked on Crossref, arXiv IDs on arXiv).
+- **Reference material.** Cheat notes per exercise, changes to the notebook code, a summary table and 18 references, including the recordings of J. Johnson's EECS 498 Lectures 15 and 16 (DOIs checked on Crossref, arXiv IDs on arXiv).
 
 ## How the detections were produced
 
