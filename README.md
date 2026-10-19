@@ -9,10 +9,11 @@ Live site: [hesamasad.github.io/week-12-object-detection](https://hesamasad.gith
 - **Part I, lecture primer (A1–A11).** Each topic in lecture order, with an interactive figure:
   - sliding windows with stride, scale and shape controls, and the window count;
   - IoU of two draggable boxes;
-  - where the CNN work goes in R-CNN, Fast R-CNN and Faster R-CNN;
+  - R-CNN, Fast R-CNN, Faster R-CNN and a single-stage detector drawn from the same blocks, coloured by what runs once per image and what runs once per region, with a step-through (redrawn after J. Johnson, EECS 498 Lecture 15);
+  - where the backbone ends and the per-region network begins, for AlexNet and ResNet-50;
   - bounding-box regression, with "set the regression targets";
-  - RoI pooling on a 20 × 15 feature map, and smooth ℓ1;
-  - Faster R-CNN anchors;
+  - RoI pooling on a 20 × 15 feature map (with the image → CNN → features pipeline above it), and smooth ℓ1;
+  - Faster R-CNN anchors, and the RPN and single-stage heads with their output tensor shapes;
   - the YOLO grid and its output tensor;
   - DETR's bipartite matching on slide 21's example;
   - NMS step by step;
@@ -24,7 +25,7 @@ Live site: [hesamasad.github.io/week-12-object-detection](https://hesamasad.gith
   - a prediction viewer with live score and IoU thresholds and TP / FP / FN colouring;
   - the classification report, precision–recall curves, mAP and per-image errors, all recomputed in the browser with FiftyOne's matching rules.
 - **Part III, exercises 1–4.** Problem statement, prerequisites, a self-checking warm-up, a guided activity and an answer. Exercise 4 has a step-by-step solution with cheat notes.
-- **Reference material.** Cheat notes per exercise, changes to the notebook code, a summary table and 16 references (DOIs checked on Crossref, arXiv IDs on arXiv).
+- **Reference material.** Cheat notes per exercise, changes to the notebook code, a summary table and 17 references (DOIs checked on Crossref, arXiv IDs on arXiv).
 
 ## How the detections were produced
 
